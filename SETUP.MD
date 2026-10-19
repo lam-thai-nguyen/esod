@@ -8,16 +8,23 @@ cd third_party/segment-anything/
 pip install -e .
 cd -
 
+cd data/VisDrone
+mkdir VisDrone2019-DET-train VisDrone2019-DET-val VisDrone2019-DET-test-dev
+# download VisDrone2019-DET-train.zip to data/VisDrone
+unzip VisDrone2019-DET-train.zip -d VisDrone2019-DET-train
 # download VisDrone2019-DET-val.zip to data/VisDrone
+unzip VisDrone2019-DET-val.zip -d VisDrone2019-DET-val
+# download VisDrone2019-DET-test-dev.zip to data/VisDrone
+unzip VisDrone2019-DET-test-dev.zip -d VisDrone2019-DET-test-dev
 # and create a soft link
-mkdir data/VisDrone/VisDrone2019-DET-val
-unzip data/VisDrone/VisDrone2019-DET-val.zip -d data/VisDrone/VisDrone2019-DET-val
 ln -sf data/VisDrone VisDrone
-rm data/VisDrone/VisDrone2019-DET-val.zip
+rm *.zip
+cd -
 
 # get weights from https://drive.google.com/drive/folders/1jrrtG34q6gqdGMx7SflNK1uM6iiVKpin
 # put it under weights/
-mv ./esod_yolov5m.pt ./weights/
+mkdir weights
+mv ~/Downloads/esod_yolov5m.pt weights/
 
 # run detect.py (sanity check)
 cp data/images/visdrone.txt data/images/sanity.txt
