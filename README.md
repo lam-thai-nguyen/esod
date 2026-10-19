@@ -1,5 +1,7 @@
 # ESOD: Efficient Small Object Detection on High-Resolution Images
 
+Note: Personal setup @ [SETUP.MD](SETUP.MD)
+
 This repository is the offical implementation of [**Efficient Small Object Detection on High-Resolution Images**](https://arxiv.org/abs/2407.16424).
 
 ## Installation

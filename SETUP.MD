@@ -6,11 +6,13 @@ pip install setuptools==59.5.0
 pip install -r requirements.txt
 cd third_party/segment-anything/
 pip install -e .
+cd -
 
 # download VisDrone2019-DET-val.zip to data/VisDrone
 # and create a soft link
 unzip data/VisDrone/VisDrone2019-DET-val.zip .
 ln -sf data/VisDrone VisDrone
+rm data/VisDrone/VisDrone2019-DET-val.zip
 
 # get weights from https://drive.google.com/drive/folders/1jrrtG34q6gqdGMx7SflNK1uM6iiVKpin
 # put it under weights/
