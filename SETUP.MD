@@ -10,13 +10,14 @@ cd -
 
 # download VisDrone2019-DET-val.zip to data/VisDrone
 # and create a soft link
-unzip data/VisDrone/VisDrone2019-DET-val.zip .
+mkdir data/VisDrone/VisDrone2019-DET-val
+unzip data/VisDrone/VisDrone2019-DET-val.zip -d data/VisDrone/VisDrone2019-DET-val
 ln -sf data/VisDrone VisDrone
 rm data/VisDrone/VisDrone2019-DET-val.zip
 
 # get weights from https://drive.google.com/drive/folders/1jrrtG34q6gqdGMx7SflNK1uM6iiVKpin
 # put it under weights/
-mv esod_yolov5m.pt weights/
+mv ./esod_yolov5m.pt ./weights/
 
 # run detect.py (sanity check)
 cp data/images/visdrone.txt data/images/sanity.txt
