@@ -209,7 +209,10 @@ def prepare_visdrone():
     os.makedirs(join(root, 'split'), exist_ok=True)
     for sub_dir in glob(join(root, 'VisDrone2019-DET-*')):
         os.makedirs(join(sub_dir, 'labels'), exist_ok=True)
-        images = sorted(glob(join(sub_dir, 'images', '*.jpg')))
+        images = sorted(
+            image_path for image_path in glob(join(sub_dir, 'images', '*.jpg'))
+            if not image_path.endswith('_masked.jpg')
+        )
         if 'test-challenge' in sub_dir:
             with open(join(root, 'split', 'test-challenge.txt'), 'w+') as f:
                 f.writelines([line + '\n' for line in images])
@@ -220,8 +223,6 @@ def prepare_visdrone():
             image = cv2.imread(image_path)
             height, width, _ = image.shape
             label_path = image_path.replace('images', 'annotations').replace('.jpg', '.txt')
-            # if "masked" in label_path:  # avoid repeated processing
-            #     continue
             assert exists(label_path)
             label_lines = []
             masked = False
