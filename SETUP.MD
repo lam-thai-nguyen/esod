@@ -88,9 +88,28 @@ du -h --max-depth 1 VisDrone/ | sort -h
 
 ## Main programs
 
+Run `detect.py`
+
 ```bash
-# run detect.py
 cp data/images/visdrone.txt data/images/sanity.txt
 echo "./VisDrone/VisDrone2019-DET-val/images/0000277_02001_d_0000549.jpg" > data/images/sanity.txt 
 python detect.py --weights weights/esod_yolov5m.pt --source data/images/sanity.txt --img-size 1536 --device 0 --view-cluster --line-thickness 1
+```
+
+Run `detect.py` on a particular image
+
+```bash
+python detect.py \
+    --weights weights/esod_yolov5m.pt \
+    --source "VisDrone/VisDrone2019-DET-train/images/0000002_00005_d_0000014_masked.jpg" \
+    --img-size 1536 \
+    --device 0 \
+    --view-cluster \
+    --line-thickness 1
+```
+
+Train:
+
+```bash
+DATASET=visdrone MODEL=yolov5m GPUS=0 BATCH_SIZE=8 IMAGE_SIZE=768 EPOCHS=10 bash ./scripts/train.sh
 ```
