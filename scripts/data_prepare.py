@@ -395,6 +395,61 @@ def prepare_tinyperson():
         else:
             with open(join(split_dir, 'test.txt'), 'w+') as f:
                 f.writelines(paths)
+
+
+def prepare_yolo():
+    """Prepare a dataset that already uses the standard YOLO layout.
+
+    Each split must contain matching ``images`` and ``labels`` directories.
+    The existing YOLO labels are kept unchanged; only ESOD masks and split
+    files are generated.
+    """
+    root = opt.dataset
+    split_dir = join(root, 'split')
+    image_extensions = ('*.jpg', '*.jpeg', '*.png', '*.bmp', '*.tif', '*.tiff')
+
+    split_paths = {}
+    for mode in ('train', 'val', 'test'):
+        images_dir = join(root, mode, 'images')
+        labels_dir = join(root, mode, 'labels')
+        if not isdir(images_dir):
+            continue
+        if not isdir(labels_dir):
+            raise FileNotFoundError(
+                'Expected labels directory for %s split: %s' % (mode, labels_dir)
+            )
+
+        images = sorted(
+            image_path
+            for pattern in image_extensions
+            for image_path in glob(join(images_dir, pattern))
+        )
+        paths = []
+        for image_path in tqdm(images, desc=mode):
+            relative_path = osp.relpath(image_path, images_dir)
+            label_path = join(labels_dir, osp.splitext(relative_path)[0] + '.txt')
+            if not exists(label_path):
+                raise FileNotFoundError(
+                    'Missing label file for image %s: %s' % (image_path, label_path)
+                )
+
+            image = cv2.imread(image_path)
+            if image is None:
+                raise ValueError('Unable to read image: %s' % image_path)
+            gen_mask(label_path, image)
+            paths.append(image_path + '\n')
+        split_paths[mode] = paths
+
+    if not split_paths:
+        raise ValueError(
+            'No YOLO splits found under %s; expected <split>/images and <split>/labels'
+            % root
+        )
+
+    os.makedirs(split_dir, exist_ok=True)
+    for mode, paths in split_paths.items():
+        with open(join(split_dir, '%s.txt' % mode), 'w+') as f:
+            f.writelines(paths)
                 
 
 if __name__ == '__main__':
@@ -410,5 +465,7 @@ if __name__ == '__main__':
         prepare_uavdt()
     elif 'tinyperson' in dataset:
         prepare_tinyperson()
+    elif any(isdir(join(opt.dataset, mode, 'images')) for mode in ('train', 'val', 'test')):
+        prepare_yolo()
     else:
         print('%s is coming soon.' % opt.dataset)

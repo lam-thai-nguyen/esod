@@ -113,3 +113,58 @@ Train:
 ```bash
 DATASET=visdrone MODEL=yolov5m GPUS=0 BATCH_SIZE=8 IMAGE_SIZE=768 EPOCHS=10 bash ./scripts/train.sh
 ```
+
+Evaluation:
+
+```bash
+python test.py --data data/visdrone.yaml --weights weights/train/EPOCH10IMGSZ768.pt --batch-size 8 --img-size 768 --device 0
+```
+
+## Train on TrafficSignLite
+
+Precondition:
+
+```bash
+du -h --max-depth 1 TrafficSignLite/ | sort -h
+```
+
+```txt
+1.2G    TrafficSignLite/val
+5.0G    TrafficSignLite/train
+6.1G    TrafficSignLite/
+```
+
+Prepare:
+
+```bash
+cp -r ~/wd-storage/Data/TrafficSignLite data/TrafficSignLite
+ln -s data/TrafficSignLite TrafficSignLite
+python scripts/data_prepare.py --dataset TrafficSignLite
+```
+
+Post-condition:
+
+```bash
+du -h --max-depth 1 TrafficSignLite/ | sort -h
+```
+
+```txt
+72K     TrafficSignLite/split
+31G     TrafficSignLite/val
+124G    TrafficSignLite/train
+154G    TrafficSignLite/
+```
+
+Train: (failed, took too long for one epoch)
+
+```bash
+python train.py \
+    --data TrafficSignLite/dataset.yaml \
+    --cfg models/cfg/esod/visdrone_yolov5m.yaml \
+    --weights weights/pretrained/yolov5m.pt \
+    --hyp data/hyps/hyp.visdrone.yaml \
+    --batch-size 8 \
+    --img-size 768 \
+    --epochs 10 \
+    --device 0
+```
